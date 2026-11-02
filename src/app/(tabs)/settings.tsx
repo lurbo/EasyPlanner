@@ -1,15 +1,32 @@
 import { StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
 import {useState} from 'react';
 import { Link } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const shraniDogodek = () => {
-
-}
 
 const settings = () => {
   const [ime, setIme] = useState('');
   const [datum, setDatum] = useState('');
   const [ura, setUra] = useState('');
+
+  const shraniDogodek = async () => {
+
+  const podatki = await AsyncStorage.getItem('dogodki');
+
+  const dogodki = podatki ? JSON.parse(podatki) : [];
+
+  dogodki.push({
+    ime: ime,
+    datum: datum,
+    ura: ura
+  });
+
+    await AsyncStorage.setItem('dogodki', JSON.stringify(dogodki));
+
+    setIme('');
+    setDatum('');
+    setUra('');
+  };
 
   return (
     <View style={styles.container} >
@@ -19,7 +36,7 @@ const settings = () => {
       <Text style={styles.label}>Ime dogodka</Text>
       <TextInput
       placeholder="Ime dogodka"
-      value={ime}s
+      value={ime}
       onChangeText={setIme}
       style={styles.text} 
       />
@@ -44,8 +61,11 @@ const settings = () => {
       style={styles.gumb}
       onPress={shraniDogodek}>
 
-        </Pressable>
-
+        
+          <Text style={styles.gumbBesedilo}>
+            Shrani dogodek
+            </Text>
+      </Pressable>
 
     </View>
   );
@@ -73,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
     marginBottom: 6,
   },
-  input: {
+  text: {
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 8,
