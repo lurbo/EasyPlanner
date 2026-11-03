@@ -4,28 +4,34 @@ import { Link } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const settings = () => {
-  const [ime, setIme] = useState('');
-  const [datum, setDatum] = useState('');
-  const [ura, setUra] = useState('');
+const Settings = () => {              //naredi funkcijo za settings
+  const [ime, setIme] = useState(''); //spremenljivka za ime dogodka in za njegov set
+  const [datum, setDatum] = useState(''); //spremenljivka za datum dogodka in za njegov set
+  const [ura, setUra] = useState(''); //spremenljivka za uro dogodka in za njen set
 
-  const shraniDogodek = async () => {
+  const shraniDogodek = async () => { //po https://react-native-async-storage.github.io/2.0/API/
 
-  const podatki = await AsyncStorage.getItem('dogodki');
+  const podatki = await AsyncStorage.getItem('dogodki'); //pridobi podatke
 
-  const dogodki = podatki ? JSON.parse(podatki) : [];
+  let dogodki;
+  if (podatki){
+    dogodki = JSON.parse(podatki);
+  }
+  else {
+    dogodki = [];
+  }
 
-  dogodki.push({
+  dogodki.push({ //izvozi
     ime: ime,
     datum: datum,
     ura: ura
   });
 
-    await AsyncStorage.setItem('dogodki', JSON.stringify(dogodki));
+  await AsyncStorage.setItem('dogodki', JSON.stringify(dogodki)); //iz tabele v text
 
-    setIme('');
-    setDatum('');
-    setUra('');
+  setIme(''); //vrne v prvotno vrednost oz izbrise iz vnosnega polja
+  setDatum('');
+  setUra('');
   };
 
   return (
@@ -60,19 +66,16 @@ const settings = () => {
       <Pressable
       style={styles.gumb}
       onPress={shraniDogodek}>
-
-        
-          <Text style={styles.gumbBesedilo}>
-            Shrani dogodek
-            </Text>
+        <Text style={styles.gumbBesedilo}>
+          Shrani dogodek
+        </Text>
       </Pressable>
 
     </View>
   );
 };
 
-export default settings;
-
+export default Settings;
 
 const styles = StyleSheet.create({
   container: {
@@ -81,24 +84,28 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: '#adb9c5',
   },
+
   naslov: {
     color: '#fff',
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+
   label: {
     color: '#fff',
     fontSize: 16,
     marginTop: 14,
     marginBottom: 6,
   },
+
   text: {
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 8,
     fontSize: 16,
   },
+
   gumb: {
     backgroundColor: '#1684ff',
     padding: 15,
@@ -106,6 +113,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 25,
   },
+
   gumbBesedilo: {
     color: '#fff',
     fontSize: 16,
